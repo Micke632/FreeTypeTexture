@@ -4,22 +4,12 @@
 #include <map>
 
 #include "../Shaders/BasicShader.h"
-#include <any>
+
 #include <functional>
-#include "../observer.h"
 #include "../PostProcess/loader.h"
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-
-enum class TextType : size_t
-{
-    FPS=0,
-    POS=1,
-    FOG=2,
-    TIME=3,
-
-};
 
 class TextRenderer
 {
@@ -31,13 +21,10 @@ public:
   
 private:
    
-    void GameEvent(int, std::any);
     void createAtlas();
 
     SimpleShader  m_shader;
-    std::map<TextType, std::string> m_info;
 
-    void addText(TextType, const std::string &s);
     void RenderText(const std::string &text, float  x, int y, float scale);
 
     Loader m_loader; 

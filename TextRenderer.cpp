@@ -8,7 +8,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "../application.h"
 #include <functional>
 
 namespace
@@ -63,9 +62,6 @@ TextRenderer::TextRenderer()
     m_VAO = m_loader.loadToVAO(vertices, textureCoord);
 
 
-    int events = ObserverEvent::Events::FPS | ObserverEvent::Events::POS | ObserverEvent::Events::BIOME | ObserverEvent::Events::FOG | ObserverEvent::Events::TIME;
-
-    AccessPoint::getInstance().m_observer.addSubscriber(events,std::bind(&TextRenderer::GameEvent, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 TextRenderer::~TextRenderer()
@@ -205,49 +201,10 @@ void TextRenderer::createAtlas()
 
 }
 
-void TextRenderer::GameEvent(int e, std::any a)
-{
-    switch (e)
-    {
-        case ObserverEvent::Events::FPS:
-        {
-            int fps = std::any_cast<int>(a);
-            addText(TextType::FPS, "FPS:" + std::to_string(fps));
-            break;
-        }
-        case ObserverEvent::Events::FOG:
-        {
-            float fog = std::any_cast<float>(a);
-            addText(TextType::FOG, "FOG:" + std::to_string(fog));
-            break;    
-        }
-        case ObserverEvent::Events::TIME:
-        {
-            float time = std::any_cast<float>(a);
-            addText(TextType::TIME, "TIME:" + std::to_string((int)time));
-            break;
-        }
-        case ObserverEvent::Events::POS:
-        {
-            glm::vec3 pos = std::any_cast<glm::vec3>(a);
-            addText(TextType::POS, "POS:" + std::to_string(pos.x)+ " "+ std::to_string(pos.y)+" "+  std::to_string(pos.z));
-            break;
-        }
-
-    };
-}
-
-
-
-void TextRenderer::addText(TextType i, const std::string &s)
-{
-    m_info[i] = s;
-
-}
 
 void TextRenderer::RenderText()
 {
-    if (m_info.empty()) return;
+
     m_shader.useProgram();
 
     glEnable(GL_BLEND);
@@ -256,14 +213,7 @@ void TextRenderer::RenderText()
 
     int y = -30;
 
-    for (auto &s : m_info)
-    {
-        RenderText(s.second, 1, Config::windowY + y, 0.5);
-        y += -30;
-    }
-
-
-    //RenderText("ABZDFGH:0124:opyuiv:wq\\", 5, Config::windowY + y, 0.5f);
+    RenderText("ABZDFGH:0124:opyuiv:wq\\", 5, Config::windowY + y, 0.5f);
 
     glBindVertexArray(0);
 
